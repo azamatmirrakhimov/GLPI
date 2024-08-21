@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: glpi-db-service
+  namespace: glpi
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: glpi-db
+  clusterIP: None
