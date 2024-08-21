@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: glpi
-  namespace: glpi
   labels:
     app: glpi
 spec:
@@ -29,22 +28,3 @@ spec:
           value: "glpipassword"
         - name: GLPI_DB_NAME
           value: "glpidb"
-        volumeMounts:
-        - name: glpi-storage
-          mountPath: /var/www/html
-      volumes:
-      - name: glpi-storage
-        persistentVolumeClaim:
-          claimName: glpi-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: glpi-pvc
-  namespace: glpi
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
