@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glpi-db
+  namespace: glpi
+  labels:
+    app: glpi-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: glpi-db
+  template:
+    metadata:
+      labels:
+        app: glpi-db
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpassword"
+        - name: MYSQL_DATABASE
+          value: "glpidb"
+        - name: MYSQL_USER
+          value: "glpiuser"
+        - name: MYSQL_PASSWORD
+          value: "glpipassword"
+        volumeMounts:
+        - name: mysql-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-storage
+        persistentVolumeClaim:
+          claimName: glpi-db-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: glpi-db-pvc
+  namespace: glpi
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
